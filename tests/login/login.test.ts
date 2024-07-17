@@ -9,21 +9,25 @@ test.describe('login form tests', () => {
 
     const existingUser = existingUsers[0]
 
-    await page
-      .locator('#root form div:nth-child(1) > div > input')
-      .pressSequentially(existingUser.email)
+    const emailInput = page.locator('#email')
+    const passwordInput = page.locator('#password')
+    const loginButton = page.getByRole('button', { name: 'LOGIN' })
 
-    await page
-      .locator('#root form div:nth-child(2) > div > input')
-      .pressSequentially(existingUser.password)
+    // Check if elements are visible before interaction
+    await expect(emailInput).toBeVisible()
+    await expect(passwordInput).toBeVisible()
+    await expect(loginButton).toBeVisible()
 
-    // Submit button
-    const button = page.locator('form .MuiButton-sizeMedium')
-    // Click on the button
-    button.click()
+    // Input email and password
+    await emailInput.pressSequentially(existingUser.email)
+    await passwordInput.pressSequentially(existingUser.password)
+
+    // Click on the login button
+    await loginButton.click()
 
     // Wait for 1 second until page is fully loaded
     await page.waitForTimeout(1000)
+    // Wait for the Log out button to be visible
     await expect(page.getByText('Log out')).toBeVisible()
   })
 })
